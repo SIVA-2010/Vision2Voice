@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hari - Non-Sign User</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container hari-theme">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="user-info">
+                    <div class="avatar">
+                        <i class="fas fa-keyboard"></i>
+                    </div>
+                    <div>
+                        <h1>Hari - Non-Sign User</h1>
+                        <div class="connection-status" id="connectionStatus">
+                            <i class="fas fa-circle"></i>
+                            <span>Connecting...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary" onclick="goHome()">
+                        <i class="fas fa-home"></i> Home
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Left Panel - Chat and Input -->
+            <div class="panel chat-input-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-comment-dots"></i> Chat with Siva</h2>
+                    <div class="panel-actions">
+                        <button class="btn-secondary" id="clearChat">
+                            <i class="fas fa-trash"></i> Clear Chat
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div class="chat-messages-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message system-message">
+                            <div class="message-content">
+                                <i class="fas fa-info-circle"></i>
+                                Welcome! You can communicate with Siva using text or speech.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="input-section">
+                    <div class="input-container">
+                        <textarea 
+                            id="textInput" 
+                            placeholder="Type your message to Siva..." 
+                            rows="3"
+                        ></textarea>
+                        <div class="input-actions">
+                            <button class="btn-speech" id="speechBtn" title="Speech Input">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <button class="btn-send" id="sendBtn" disabled>
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                        </div>
+                        <div class="input-actions">
+    <button class="btn-speech" id="speechBtn" title="Speech Input">
+        <i class="fas fa-microphone"></i>
+    </button>
+    <!-- Add this grammar correction button -->
+    <button class="btn-secondary" id="correctGrammar" title="Correct Grammar">
+        <i class="fas fa-magic"></i> Correct
+    </button>
+    <button class="btn-send" id="sendBtn" disabled>
+        <i class="fas fa-paper-plane"></i> Send Message
+    </button>
+</div>
+                    </div>
+                    
+                    <div class="input-stats">
+                        <span id="characterCount">0 characters</span>
+                        <span id="wordCount">0 words</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Message Processing and Translation -->
+            <div class="panel translation-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-language"></i> Message Processing</h2>
+                    <div class="panel-actions">
+                        <button class="btn-primary" id="speakMessage">
+                            <i class="fas fa-volume-up"></i> Speak
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Received Message Display -->
+                <div class="message-display-section">
+                    <h3>Message from Siva:</h3>
+                    <div class="received-message" id="receivedMessage">
+                        <div class="placeholder">Waiting for message from Siva...</div>
+                    </div>
+                    <div class="message-info">
+                        <span id="messageTime">-</span>
+                        <span id="messageLanguage">English</span>
+                    </div>
+                </div>
+
+                <!-- Language Selection -->
+                <div class="language-section">
+                    <h3>Translate To:</h3>
+                    <div class="language-options">
+                        <label class="language-option">
+                            <input type="radio" name="language" value="en" checked>
+                            <span class="radio-label">English</span>
+                        </label>
+                        <label class="language-option">
+                            <input type="radio" name="language" value="hi">
+                            <span class="radio-label">Hindi</span>
+                        </label>
+                        <label class="language-option">
+                            <input type="radio" name="language" value="ta">
+                            <span class="radio-label">Tamil</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Translation Result -->
+                <div class="translation-section">
+                    <h3>Translated Message:</h3>
+                    <div class="translated-message" id="translatedMessage">
+                        <div class="placeholder">Select language to see translation...</div>
+                    </div>
+                    <div class="translation-actions">
+                        <button class="btn-secondary" id="copyTranslation">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                        <button class="btn-success" id="speakTranslation">
+                            <i class="fas fa-volume-up"></i> Speak Translation
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Responses -->
+                <div class="quick-responses">
+                    <h3>Quick Responses:</h3>
+                    <div class="response-buttons">
+                        <button class="response-btn" data-text="Hello! How are you?">
+                            👋 Hello
+                        </button>
+                        <button class="response-btn" data-text="I understand">
+                            👍 I understand
+                        </button>
+                        <button class="response-btn" data-text="Thank you">
+                            🙏 Thank you
+                        </button>
+                        <button class="response-btn" data-text="Can you repeat that?">
+                            🔄 Repeat
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <div class="status-items">
+                <div class="status-item">
+                    <i class="fas fa-user-friends"></i>
+                    <span id="partnerStatus">Waiting for Siva...</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-wifi"></i>
+                    <span id="networkStatus">Connected</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-clock"></i>
+                    <span id="sessionTimer">00:00</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="/js/hari-app.js"></script>
+    
+    <script>
+        function goHome() {
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>

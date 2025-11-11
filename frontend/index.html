@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Chat Bridge</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="landing-container">
+        <div class="hero-section">
+            <div class="logo">
+                <div class="sign-icon">🤟</div>
+                <h1>Sign Language Chat Bridge</h1>
+            </div>
+            <p class="tagline">Connecting Sign Users and Non-Sign Users Seamlessly</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-sign-language"></i>
+                    <h3>Real-time Sign Detection</h3>
+                    <p>Advanced AI recognizes hand signs with high accuracy</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-comments"></i>
+                    <h3>Two-Way Communication</h3>
+                    <p>Sign to text and text to sign conversion</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-language"></i>
+                    <h3>Multi-language Support</h3>
+                    <p>English, Hindi, and Tamil translation</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-microphone"></i>
+                    <h3>Voice & Text Input</h3>
+                    <p>Multiple ways to communicate</p>
+                </div>
+            </div>
+
+            <div class="role-selection">
+                <h2>Choose Your Role to Start Chatting</h2>
+                <div class="role-buttons">
+                    <a href="/siva" class="role-btn siva-btn">
+                        <i class="fas fa-hands"></i>
+                        <span>I Use Sign Language<br><small>(Siva - Sign User)</small></span>
+                    </a>
+                    <a href="/hari" class="role-btn hari-btn">
+                        <i class="fas fa-keyboard"></i>
+                        <span>I Use Text/Speech<br><small>(Hari - Non-Sign User)</small></span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <h3>How It Works:</h3>
+                <div class="workflow">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <p>Siva uses signs that get converted to text</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <p>Hari receives the text message</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <p>Hari responds with text or speech</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <p>Siva sees the response as sign animation</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactive animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.classList.add('animate-in');
+            });
+        });
+    </script>
+</body>
+</html>

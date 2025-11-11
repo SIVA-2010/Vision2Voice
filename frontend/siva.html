@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siva - Sign Language User</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container siva-theme">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="user-info">
+                    <div class="avatar">
+                        <i class="fas fa-hands"></i>
+                    </div>
+                    <div class="user-details">
+                        <h1>Siva - Sign Language User</h1>
+                        <div class="connection-status" id="connectionStatus">
+                            <i class="fas fa-circle"></i>
+                            <span>Connecting...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary" onclick="goHome()">
+                        <i class="fas fa-home"></i> Home
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Left Panel - Detection Controls -->
+            <div class="panel detection-panel" style="height: 300px;">
+                <div class="panel-header">
+                    <h2><i class="fas fa-camera"></i> Sign Detection</h2>
+                    <div class="panel-actions">
+                        <button class="btn-primary" id="startDetection">
+                            <i class="fas fa-play"></i> Start Signing
+                        </button>
+                        <button class="btn-danger" id="stopDetection" disabled>
+                            <i class="fas fa-stop"></i> Stop
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel-content">
+                    <div class="detection-info-card">
+                        <h3>📋 How to Use:</h3>
+                        <ul class="instructions-list">
+                            <li>Click "Start Signing" to open OpenCV window</li>
+                            <li>Show your hand signs in the detection box</li>
+                            <li>Press 'Q' in OpenCV window to stop detection</li>
+                            <li>Messages will be sent to Hari automatically</li>
+                        </ul>
+                    </div>
+
+                    <div class="detection-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Hand Status:</span>
+                            <span class="stat-value" id="handStatus">Not started</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Last Prediction:</span>
+                            <span class="stat-value" id="lastPrediction">-</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Detection State:</span>
+                            <span class="stat-value" id="detectionState">Ready</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Chat Only -->
+            <div class="panel chat-display-panel" style="height: 300px;">
+                <div class="panel-header">
+                    <h2><i class="fas fa-comments"></i> Conversation with Hari</h2>
+                    <div class="panel-actions">
+                        <div class="language-selector">
+                            <label>Output Language:</label>
+                            <select id="languageSelect">
+                                <option value="en">English</option>
+                                <option value="hi">Hindi</option>
+                                <option value="ta">Tamil</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-content">
+                    <!-- Chat Messages Only -->
+                    <div class="chat-section" style="height: 100%;">
+                        <div class="chat-messages" id="chatMessages" style="height: 200px; overflow-y: auto;">
+                            <div class="message system-message">
+                                <div class="message-content">
+                                    <i class="fas fa-info-circle"></i>
+                                    Welcome! Start signing to communicate with Hari.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Panel - Sign Images Display (Full Width) -->
+            <div class="panel sign-images-panel" style="grid-column: 1 / -1; height: 400px; margin-top: 1rem;">
+                <div class="panel-header">
+                    <h2><i class="fas fa-hands"></i> Hari's Messages as Signs</h2>
+                    <div class="panel-actions">
+                        <div class="animation-controls">
+                            <button class="btn-play" id="playAnimation">
+                                <i class="fas fa-play"></i> Play
+                            </button>
+                            <button class="btn-stop" id="stopAnimation" disabled>
+                                <i class="fas fa-stop"></i> Stop
+                            </button>
+                            <span id="animationStatus" style="color: var(--text-light); font-size: 0.85rem; margin-left: 10px;">
+                                Ready
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-content" style="padding: 0;">
+                    <div class="sign-display-container" id="signDisplayContainer">
+                        <div class="placeholder-signs">
+                            <i class="fas fa-hands"></i>
+                            <p>Hari's messages will appear here as sign sequences</p>
+                            <small style="margin-top: 10px; opacity: 0.7;">Messages from Hari will be converted to sign language images</small>
+                        </div>
+                    </div>
+                    <div class="animation-progress">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <div class="status-items">
+                <div class="status-item">
+                    <i class="fas fa-microchip"></i>
+                    <span id="detectionStatus">Detection Ready</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-wifi"></i>
+                    <span id="networkStatus">Connected</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-user-friends"></i>
+                    <span id="partnerStatus">Waiting for Hari...</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-clock"></i>
+                    <span id="sessionTimer">00:00</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="/js/webcam.js"></script>
+    <script src="/js/sign-display.js"></script>
+    
+    <script>
+        function goHome() {
+            window.location.href = '/';
+        }
+
+        // Enhanced Sign Display with WebSocket integration
+        class EnhancedSignDisplay {
+            constructor(containerId) {
+                this.container = document.getElementById(containerId);
+                this.currentSequence = [];
+                this.currentIndex = 0;
+                this.isPlaying = false;
+                this.animationInterval = null;
+                this.animationSpeed = 1000; // ms per sign
+            }
+
+            showSignSequence(sequence, originalText = '') {
+                if (!sequence || !sequence.length) {
+                    this.showPlaceholder();
+                    return;
+                }
+
+                try {
+                    this.currentSequence = sequence;
+                    this.currentIndex = 0;
+                    
+                    // Clear container
+                    this.clearContainer();
+                    
+                    // Show original text
+                    if (originalText) {
+                        this.showOriginalText(originalText);
+                    }
+                    
+                    // Display the complete sequence
+                    this.displayEnhancedSequence(sequence);
+                    
+                    // Update animation controls
+                    this.updateAnimationControls(false);
+                    
+                    console.log('✅ Sign sequence displayed:', sequence);
+                    
+                } catch (error) {
+                    console.error('❌ Error showing sign sequence:', error);
+                    this.showError('Failed to load sign animation');
+                }
+            }
+
+            displayEnhancedSequence(sequence) {
+                const sequenceContainer = document.createElement('div');
+                sequenceContainer.className = 'sign-sequence-enhanced';
+                sequenceContainer.style.cssText = `
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 15px;
+                    padding: 20px;
+                    width: 100%;
+                    overflow-y: auto;
+                `;
+                
+                let currentRow = this.createSignRow();
+                let currentRowSigns = 0;
+                const maxSignsPerRow = 6;
+
+                for (let i = 0; i < sequence.length; i++) {
+                    const sign = sequence[i];
+                    
+                    if (sign === 'SPACE') {
+                        const spaceElement = this.createSpaceElement();
+                        currentRow.appendChild(spaceElement);
+                        currentRowSigns++;
+                    } else if (sign === 'ENTER') {
+                        // Add current row and start new row
+                        if (currentRow.children.length > 0) {
+                            sequenceContainer.appendChild(currentRow);
+                        }
+                        currentRow = this.createSignRow();
+                        currentRowSigns = 0;
+                    } else if (sign !== 'BACKSPACE') {
+                        const signElement = this.createEnhancedSignElement(sign, i);
+                        currentRow.appendChild(signElement);
+                        currentRowSigns++;
+                    }
+
+                    // Start new row if current row has enough signs
+                    if (currentRowSigns >= maxSignsPerRow) {
+                        sequenceContainer.appendChild(currentRow);
+                        currentRow = this.createSignRow();
+                        currentRowSigns = 0;
+                    }
+                }
+
+                // Add the last row if it has content
+                if (currentRow.children.length > 0) {
+                    sequenceContainer.appendChild(currentRow);
+                }
+
+                this.container.appendChild(sequenceContainer);
+                
+                // Auto-scroll to show the sequence
+                this.container.scrollTop = 0;
+            }
+
+            createSignRow() {
+                const row = document.createElement('div');
+                row.className = 'sign-row-enhanced';
+                row.style.cssText = `
+                    display: flex;
+                    gap: 10px;
+                    justify-content: center;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    width: 100%;
+                `;
+                return row;
+            }
+
+            createSpaceElement() {
+                const spaceElement = document.createElement('div');
+                spaceElement.className = 'sign-space-enhanced';
+                spaceElement.innerHTML = '␣';
+                spaceElement.title = 'Space';
+                spaceElement.style.cssText = `
+                    width: 80px;
+                    height: 80px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                    border: 2px solid #5a6fd8;
+                    border-radius: 8px;
+                    font-size: 24px;
+                    color: white;
+                    font-weight: bold;
+                `;
+                return spaceElement;
+            }
+
+            createEnhancedSignElement(signClass, index) {
+                const signElement = document.createElement('div');
+                signElement.className = `sign-element-enhanced ${signClass.toLowerCase()}`;
+                signElement.dataset.index = index;
+                signElement.dataset.sign = signClass;
+                
+                signElement.style.cssText = `
+                    width: 80px;
+                    height: 80px;
+                    border: 2px solid #e5e7eb;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    position: relative;
+                    background: white;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                `;
+
+                // Create image element
+                const imgElement = document.createElement('img');
+                imgElement.src = `/api/sign-image/${signClass}`;
+                imgElement.alt = signClass;
+                imgElement.style.cssText = `
+                    width: 70%;
+                    height: 70%;
+                    object-fit: contain;
+                `;
+                
+                imgElement.onerror = () => {
+                    // Fallback to text if image fails to load
+                    signElement.innerHTML = `
+                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; 
+                                  background: linear-gradient(135deg, #f3f4f6, #e5e7eb); color: #374151; 
+                                  font-weight: bold; font-size: 14px; text-align: center; padding: 5px;">
+                            ${signClass}
+                        </div>
+                    `;
+                };
+                
+                signElement.appendChild(imgElement);
+
+                // Add label
+                const label = document.createElement('div');
+                label.className = 'sign-label-enhanced';
+                label.textContent = signClass;
+                label.style.cssText = `
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    background: #374151;
+                    color: white;
+                    font-size: 10px;
+                    padding: 2px;
+                    text-align: center;
+                    font-weight: 600;
+                `;
+                signElement.appendChild(label);
+
+                return signElement;
+            }
+
+            showOriginalText(text) {
+                const textHeader = document.createElement('div');
+                textHeader.className = 'original-text-enhanced';
+                textHeader.innerHTML = `
+                    <div style="
+                        background: linear-gradient(135deg, #10b981, #059669);
+                        color: white;
+                        padding: 15px;
+                        border-radius: 8px;
+                        text-align: center;
+                        margin-bottom: 15px;
+                        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    ">
+                        <div style="font-size: 14px; opacity: 0.9; margin-bottom: 5px;">Original Message:</div>
+                        <div style="font-size: 16px; font-weight: 600;">"${this.escapeHtml(text)}"</div>
+                    </div>
+                `;
+                
+                this.container.appendChild(textHeader);
+            }
+
+            playAnimation() {
+                if (this.isPlaying) {
+                    this.stopAnimation();
+                    return;
+                }
+
+                if (this.currentSequence.length === 0) {
+                    this.showNotification('No sign sequence to play', 'warning');
+                    return;
+                }
+
+                this.isPlaying = true;
+                this.currentIndex = 0;
+                
+                this.updateAnimationControls(true);
+                
+                // Start animation
+                this.animationInterval = setInterval(() => {
+                    this.highlightCurrentSign();
+                    this.currentIndex++;
+                    
+                    if (this.currentIndex >= this.currentSequence.length) {
+                        this.stopAnimation();
+                        this.showNotification('Animation completed', 'success');
+                    }
+                }, this.animationSpeed);
+                
+                // Highlight first sign immediately
+                this.highlightCurrentSign();
+                
+                this.showNotification('Animation started', 'info');
+            }
+
+            stopAnimation() {
+                this.isPlaying = false;
+                this.currentIndex = 0;
+                
+                if (this.animationInterval) {
+                    clearInterval(this.animationInterval);
+                    this.animationInterval = null;
+                }
+                
+                this.clearHighlights();
+                this.updateAnimationControls(false);
+                this.updateProgress(0);
+                
+                this.showNotification('Animation stopped', 'info');
+            }
+
+            highlightCurrentSign() {
+                // Remove previous highlights
+                this.clearHighlights();
+                
+                // Highlight current sign
+                const currentSign = this.currentSequence[this.currentIndex];
+                const signElements = this.container.querySelectorAll('.sign-element-enhanced, .sign-space-enhanced');
+                
+                signElements.forEach(element => {
+                    if (parseInt(element.dataset.index) === this.currentIndex) {
+                        element.style.borderColor = '#10b981';
+                        element.style.transform = 'scale(1.1)';
+                        element.style.boxShadow = '0 6px 20px rgba(16, 185, 129, 0.4)';
+                        element.style.zIndex = '10';
+                        
+                        // Scroll to center the highlighted element
+                        element.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center',
+                            inline: 'center'
+                        });
+                    }
+                });
+                
+                // Update progress
+                const progress = (this.currentIndex / this.currentSequence.length) * 100;
+                this.updateProgress(progress);
+            }
+
+            clearHighlights() {
+                const signElements = this.container.querySelectorAll('.sign-element-enhanced, .sign-space-enhanced');
+                signElements.forEach(element => {
+                    element.style.borderColor = '';
+                    element.style.transform = '';
+                    element.style.boxShadow = '';
+                    element.style.zIndex = '';
+                });
+            }
+
+            updateProgress(percent) {
+                const progressFill = document.getElementById('progressFill');
+                if (progressFill) {
+                    progressFill.style.width = `${percent}%`;
+                }
+            }
+
+            updateAnimationControls(playing) {
+                const playBtn = document.getElementById('playAnimation');
+                const stopBtn = document.getElementById('stopAnimation');
+                const status = document.getElementById('animationStatus');
+                
+                if (playBtn) {
+                    playBtn.disabled = playing;
+                    playBtn.innerHTML = playing ? 
+                        '<i class="fas fa-pause"></i> Pause' : 
+                        '<i class="fas fa-play"></i> Play';
+                }
+                
+                if (stopBtn) {
+                    stopBtn.disabled = !playing;
+                }
+                
+                if (status) {
+                    status.textContent = playing ? 'Playing...' : 'Ready';
+                    status.style.color = playing ? 'var(--success-color)' : 'var(--text-light)';
+                }
+            }
+
+            showPlaceholder() {
+                this.clearContainer();
+                
+                const placeholder = document.createElement('div');
+                placeholder.className = 'placeholder-signs';
+                placeholder.innerHTML = `
+                    <div style="
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        height: 300px;
+                        width: 100%;
+                        color: #6b7280;
+                        text-align: center;
+                        padding: 40px;
+                    ">
+                        <i class="fas fa-hands" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <h3 style="margin-bottom: 10px; color: #374151;">No Sign Sequence</h3>
+                        <p>Send a message to see sign animation here</p>
+                    </div>
+                `;
+                
+                this.container.appendChild(placeholder);
+            }
+
+            clearContainer() {
+                if (this.container) {
+                    this.container.innerHTML = '';
+                }
+            }
+
+            showError(message) {
+                this.clearContainer();
+                
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'placeholder-signs';
+                errorDiv.innerHTML = `
+                    <div style="
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        height: 300px;
+                        width: 100%;
+                        padding: 40px;
+                        text-align: center;
+                    ">
+                        <i class="fas fa-exclamation-triangle" style="color: #ef4444; font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h3 style="color: #ef4444; margin-bottom: 10px;">Error Loading Animation</h3>
+                        <p style="color: #6b7280;">${message}</p>
+                    </div>
+                `;
+                
+                this.container.appendChild(errorDiv);
+            }
+
+            showNotification(message, type = 'info') {
+                console.log(`🔤 Sign Display: ${message}`);
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize webcam detection
+            if (typeof WebcamDetection !== 'undefined') {
+                window.webcamDetection = new WebcamDetection();
+                console.log('🎯 Webcam Detection System Ready');
+            }
+            
+            // Initialize enhanced sign display
+            window.signDisplay = new EnhancedSignDisplay('signDisplayContainer');
+            console.log('🔤 Enhanced Sign Display System Ready');
+            
+            // Setup animation controls
+            document.getElementById('playAnimation').addEventListener('click', () => {
+                window.signDisplay.playAnimation();
+            });
+            
+            document.getElementById('stopAnimation').addEventListener('click', () => {
+                window.signDisplay.stopAnimation();
+            });
+
+            // Listen for sign sequence updates from server
+            if (window.webcamDetection && window.webcamDetection.socket) {
+                window.webcamDetection.socket.on('sign_sequence_update', (data) => {
+                    console.log('🔄 Received sign sequence update:', data);
+                    if (window.signDisplay && data.sign_sequence) {
+                        window.signDisplay.showSignSequence(data.sign_sequence, data.original_text);
+                        console.log('✅ Sign sequence displayed for Hari\'s message:', data.sign_sequence);
+                    }
+                });
+
+                // Listen for connection status
+                window.webcamDetection.socket.on('connect', () => {
+                    console.log('✅ Connected to server - ready for sign sequences');
+                });
+            }
+
+            // Fallback: Direct socket connection if webcamDetection not available
+            if (!window.webcamDetection) {
+                const socket = io();
+                socket.on('connect', () => {
+                    console.log('✅ Direct socket connection established');
+                    socket.emit('join_chat', {
+                        user_type: 'siva',
+                        room_id: 'siva_hari_chat'
+                    });
+                });
+
+                socket.on('sign_sequence_update', (data) => {
+                    console.log('🔄 Received sign sequence via direct connection:', data);
+                    if (window.signDisplay && data.sign_sequence) {
+                        window.signDisplay.showSignSequence(data.sign_sequence, data.original_text);
+                        console.log('✅ Sign sequence displayed:', data.sign_sequence);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
