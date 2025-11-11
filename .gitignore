@@ -1,0 +1,9 @@
+signlang_env/
+__pycache__/
+*.pth
+*.pt
+*.h5
+*.onnx
+models/
+data/
+.torch_cache/
