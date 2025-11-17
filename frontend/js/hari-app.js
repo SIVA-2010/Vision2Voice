@@ -44,34 +44,30 @@ class HariApp {
 
     initSocketConnection() {
         try {
-        // Use the specific IP address of your server
-        this.socket = io('http://172.20.10.4:5000', {
-            transports: ['websocket', 'polling'],
-            timeout: 10000
-        });
-        
-        this.socket.on('connect', () => {
-            console.log('✅ Connected to server at 172.20.10.4:5000');
-            this.isConnected = true;
-            this.updateConnectionStatus('connected', 'Connected to server');
+            this.socket = io('http://localhost:5000');
             
-            // Join chat as Hari
-            this.socket.emit('join_chat', {
-                user_type: 'hari',
-                room_id: 'siva_hari_chat'
+            this.socket.on('connect', () => {
+                console.log('✅ Connected to server');
+                this.isConnected = true;
+                this.updateConnectionStatus('connected', 'Connected to server');
+                
+                // Join chat as Hari
+                this.socket.emit('join_chat', {
+                    user_type: 'hari',
+                    room_id: 'siva_hari_chat'
+                });
             });
-        });
 
-        this.socket.on('disconnect', (reason) => {
-            console.log('❌ Disconnected from server:', reason);
-            this.isConnected = false;
-            this.updateConnectionStatus('disconnected', `Disconnected: ${reason}`);
-        });
+            this.socket.on('disconnect', () => {
+                console.log('❌ Disconnected from server');
+                this.isConnected = false;
+                this.updateConnectionStatus('disconnected', 'Disconnected from server');
+            });
 
-        this.socket.on('connect_error', (error) => {
-            console.error('❌ Connection error:', error);
-            this.updateConnectionStatus('error', `Connection failed: ${error.message}`);
-        });
+            this.socket.on('connect_error', (error) => {
+                console.error('❌ Connection error:', error);
+                this.updateConnectionStatus('error', 'Connection failed');
+            });
 
             this.socket.on('join_status', (data) => {
                 if (data.status === 'joined') {

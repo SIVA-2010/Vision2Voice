@@ -18,9 +18,7 @@ class WebcamDetection {
         this.detectionCount = 0;
         this.targetLanguage = 'en';
         
-        this.socket = io('http://172.20.10.4:5000', {
-    transports: ['websocket', 'polling']
-});
+        this.socket = io();
         this.setupSocketListeners();
         this.setupEventListeners();
         
